@@ -22,8 +22,7 @@ namespace EFSamurai.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<SamuraiBattle>()
-                .HasKey(c => new { c.SamuraiId, c.BattleId });
+            modelBuilder.Entity<SamuraiBattle>().HasKey(c => new { c.SamuraiId, c.BattleId });
         }
 
         private DbSet<SamuraiBattle> SamuraiBattles { get; set; }
