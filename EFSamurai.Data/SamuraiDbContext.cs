@@ -19,6 +19,14 @@ namespace EFSamurai.Data
         private DbSet<Quote> Quotes { get; set; }
 
         private DbSet<SecretIdentity> SecretIdentities { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SamuraiBattle>()
+                .HasKey(c => new { c.SamuraiId, c.BattleId });
+        }
+
+        private DbSet<SamuraiBattle> SamuraiBattles { get; set; }
     }
 
 }

@@ -12,5 +12,6 @@ namespace EFSamurai.Domain
         public ICollection<Quote> Quotes { get; set; }
 
         public SecretIdentity SecretIdentity { get; set; }
+        private ICollection<SamuraiBattle> SamuraiBattles;
     }
 }
