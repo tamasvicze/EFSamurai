@@ -17,11 +17,12 @@ namespace EFSamurai.App
             //AddOneSamurai();
             //AddSomeSamurais();
             //AddSomeBattles();
-            AddOneSamuraiWithRelatedData();
+            //AddOneSamuraiWithRelatedData();
             //ClearDatabase();
 
             //READ Methods
             //ListAllSamuraiNames();
+            ListAllSamuraiNames_OrderByName();
         }
 
         private static void AddOneSamurai()
@@ -197,10 +198,38 @@ namespace EFSamurai.App
         {
             using SamuraiDbContext db = new();
 
-            var query = from name in db.Samurais.AsEnumerable() orderby name.Name select name.Name;
+            var query = from name in db.Samurais orderby name.Name select name.Name;
             foreach (var name in query)
             {
                 Console.WriteLine(name);
+            }
+        }
+
+        public static void ListAllSamuraiNames_OrderByIdDescending()
+        {
+            using SamuraiDbContext db = new();
+
+            var query = from name in db.Samurais orderby name.Id descending select name.Name;
+            foreach (var name in query)
+            {
+                Console.WriteLine(name);
+            }
+        }
+
+        public static void FindSamuraiWithRealName(string name)
+        {
+            using SamuraiDbContext db = new();
+            var query = db.SecretIdentities.Select(n => n.RealName).ToList();
+            foreach (var realName in query)
+            {
+                if (realName == name)
+                {
+                    Console.WriteLine("We've uncovered: ");
+                }
+                else
+                {
+                    Console.WriteLine("We haven't uncovered: ");
+                }
             }
         }
     }

@@ -18,7 +18,7 @@ namespace EFSamurai.Data
 
         private DbSet<Quote> Quotes { get; set; }
 
-        private DbSet<SecretIdentity> SecretIdentities { get; set; }
+        public DbSet<SecretIdentity> SecretIdentities { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
