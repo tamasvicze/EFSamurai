@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Channels;
 using EFSamurai.Data;
 using EFSamurai.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace EFSamurai.App
@@ -15,7 +18,6 @@ namespace EFSamurai.App
             //AddSomeSamurais();
         }
 
-        #region AddOneSamurai
         private static void AddOneSamurai()
         {
             using SamuraiDbContext db = new();
@@ -23,10 +25,7 @@ namespace EFSamurai.App
             db.Samurais.Add(samurai);
             db.SaveChanges();
         }
-        #endregion
 
-
-        #region AddSomeSamurais
         private static void AddSomeSamurais()
         {
             IList<Samurai> newSamurai = new List<Samurai>()
@@ -40,10 +39,7 @@ namespace EFSamurai.App
             db.AddRange(newSamurai);
             db.SaveChanges();
         }
-        #endregion
 
-
-        #region AddSomeBattles
         private static void AddSomeBattles()
         {
             using SamuraiDbContext db = new();
@@ -109,12 +105,86 @@ namespace EFSamurai.App
             db.SaveChanges();
         }
 
-        #endregion
+        public static void AddOneSamuraiWithRelatedData()
+        {
+            using SamuraiDbContext db = new();
 
-        #region AddOneSamuraiWithRelatedData
-        
+            Samurai samurai = new()
+            {
+                Name = "Harry Styles",
+                Hairstyle = Hairstyle.Eastern,
+                Quotes = new List<Quote>()
+                {
+                    new()
+                    {
+                        QuoteStyle = QuoteStyle.Cheesy, Text = "Everybody wanna steal my gi-i-irl"
+                    }
+                },
+                SecretIdentity = new()
+                {
+                    RealName = "Harry Bad-Dresser"
+                },
+                SamuraiBattle = new List<SamuraiBattle>()
+                {
+                    new()
+                    {
+                        //The Samurai object part of the many to many table is already made, so only a Battle needs to be created
+                        Battle = new()
+                        {
+                            Name = "The Battle of The British X-Factor",
+                            Description = "This battle happened after Zayn Malik tried to quit the band.",
+                            IsBrutal = true,
+                            StartDate = new DateTime(2015, 05, 10),
+                            EndDate = new DateTime(),
 
+                            BattleLog = new()
+                            {
+                                Name = "Log for The Battle of The British X-Factor",
+                                BattleEvents = new List<BattleEvent>()
+                                {
+                                    new()
+                                    {
+                                        Description =
+                                            "BBC had exclusive rights for coverage of the X-Factor, which made their stocks increase by +400%",
+                                        Summary = "So Simon Pawell was the host, which started this whole thing...",
+                                        Order = 01
+                                    }
+                                },
+                            }
+                        }
+                    }
 
-        #endregion
+                }
+            };
+            db.Samurais.Add(samurai);
+            db.SaveChanges();
+        }
+
+        public static void ClearDatabase()
+        {
+            using SamuraiDbContext db = new();
+            db.RemoveRange(db.Samurais);
+            db.RemoveRange(db.Battles);
+
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('Samurais', RESEED, 1)");
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('SecretIdentities', RESEED, 1)");
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('Quotes', RESEED, 1)");
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('Battles', RESEED, 1)");
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('BattleLogs', RESEED, 1)");
+            db.Database.ExecuteSqlRaw("DBCC CHECKIDENT('BattleEvents', RESEED, 1)");
+            db.SaveChanges();
+        }
+
+        //Read-methods
+        public static void ListAllSamuraiNames()
+        {
+            using SamuraiDbContext db = new();
+
+            var query = from name in db.Samurais.AsEnumerable() select name.Name;
+            foreach (var name in query)
+            {
+                Console.WriteLine(name);
+            }
+        }
     }
 }
