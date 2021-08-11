@@ -24,7 +24,7 @@ namespace EFSamurai.Data
         {
             modelBuilder.Entity<SamuraiBattle>().HasKey(c => new { c.SamuraiId, c.BattleId });
         }
-
+        public DbSet<Battle> Battles { get; set; }
         private DbSet<SamuraiBattle> SamuraiBattles { get; set; }
     }
 
