@@ -16,6 +16,12 @@ namespace EFSamurai.App
         {
             //AddOneSamurai();
             //AddSomeSamurais();
+            //AddSomeBattles();
+            AddOneSamuraiWithRelatedData();
+            //ClearDatabase();
+
+            //READ Methods
+            //ListAllSamuraiNames();
         }
 
         private static void AddOneSamurai()
@@ -181,6 +187,17 @@ namespace EFSamurai.App
             using SamuraiDbContext db = new();
 
             var query = from name in db.Samurais.AsEnumerable() select name.Name;
+            foreach (var name in query)
+            {
+                Console.WriteLine(name);
+            }
+        }
+
+        public static void ListAllSamuraiNames_OrderByName()
+        {
+            using SamuraiDbContext db = new();
+
+            var query = from name in db.Samurais.AsEnumerable() orderby name.Name select name.Name;
             foreach (var name in query)
             {
                 Console.WriteLine(name);
